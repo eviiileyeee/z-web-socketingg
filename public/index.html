@@ -55,8 +55,10 @@
         li {
             display: inline-block;
             padding: 10px;
+            margin: 1px;
             border-radius: 10px;
             background-color: white;
+            min-width: 20%;
             max-width: 80%;
             border-radius: 10px;
         }
@@ -129,7 +131,8 @@
             const li = document.createElement("li");
             li.textContent = `${name} has joined the chat.`
             messages.appendChild(li);
-            li.style.background = "blue";
+            li.style.background = "grey";
+            li.style.color = "black";
         });
 
         form.addEventListener('submit', (e) => {
@@ -147,6 +150,14 @@
             messages.appendChild(item);
             window.scrollTo(0, document.body.scrollHeight);
         });
+
+        socket.on('user-disconnected',name =>{
+            const li = document.createElement("li");
+            li.textContent = `${name} has left the chat.`
+            messages.appendChild(li);
+            li.style.background = "grey";
+            li.style.color = "black";
+        })
     </script>
 </body>
 

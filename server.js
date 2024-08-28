@@ -14,7 +14,7 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-    
+
     socket.on('new-user-joined',(name)=>{
         console.log(name,"joined the chat");
         users[socket.id] = name;
@@ -23,6 +23,7 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         console.log('user disconnected',users[socket.id]);
+        socket.broadcast.emit('user-disconnected',users[socket.id])
       });
 
       socket.on('chat message', (name,msg) => {
@@ -32,6 +33,6 @@ io.on('connection', (socket) => {
   });
 
 
-server.listen(3000, () => {
-  console.log('server running at http://localhost:3000');
+server.listen(5000, () => {
+  console.log('server running at http://localhost:5000');
 });
