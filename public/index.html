@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Socket.IO chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .chat-container {
+            width: 400px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            max-width: 400px;
+            /* adjust this value to set the maximum width */
+            margin: 40px auto;
+            /* center the chat container */
+            background-color: #f7f7f7;
+            padding: 20px;
+            min-height: 600px;
+
+        }
+
+        .chat-header {
+            background-color: #075E54;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 10px;
+        }
+
+        #messages {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: #e5ddd5;
+            display: flex;
+            flex-direction: column;
+
+        }
+
+
+        li {
+            display: inline-block;
+            padding: 10px;
+            border-radius: 10px;
+            background-color: white;
+            max-width: 80%;
+            border-radius: 10px;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+
+        .chat-input input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            outline: none;
+        }
+
+        .chat-input button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            background-color: #075E54;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .chat-input button:hover {
+            background-color: #0b7a67;
+        }
+
+
+
+        #messages>li {
+            padding: 0.5rem 1rem;
+        }
+
+        #messages>li:nth-child(odd) {
+            background: #efefef;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>Eth-Chat</h2>
+        </div>
+        <ul id="messages">
+
+        </ul>
+        <form class="chat-input" id="form" action="">
+            <input id="input" autocomplete="off" /><button>Send</button>
+        </form>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        const form = document.getElementById('form');
+        const input = document.getElementById('input');
+        const messages = document.getElementById('messages');
+        const name = prompt("enter your name");
+
+        socket.emit('new-user-joined', name);
+
+
+        socket.on('user-joined', name => {
+            const li = document.createElement("li");
+            li.textContent = `${name} has joined the chat.`
+            messages.appendChild(li);
+            li.style.background = "blue";
+        });
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (input.value) {
+                socket.emit('chat message', name, input.value);
+                input.value = '';
+            }
+        });
+
+
+        socket.on('chat message', (msg, name) => {
+            const item = document.createElement('li');
+            item.textContent = `${name}: ${msg}`;
+            messages.appendChild(item);
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+    </script>
+</body>
+
+</html>
